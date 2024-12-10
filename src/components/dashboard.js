@@ -58,7 +58,7 @@ const Dashboard = () => {
 
   const aggregateBookingByMonth = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
-      if (order.updatedAt && isValidDate(order.updatedAt)) {
+      if (order?.updatedAt && isValidDate(order?.updatedAt)) {
         const updatedDate = new Date(order.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedMonth = format(updatedDate, 'MM/yyyy'); // Group by month

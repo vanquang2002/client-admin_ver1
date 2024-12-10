@@ -191,11 +191,11 @@ const ListBooking = () => {
 
   const filteredBookings = bookings.filter((booking) => {
     const formattedValue = searchQuery.trim().replace(/\s+/g, ' ');
-    const bookingId = booking.bookingId._id.toLowerCase();
-    const customerName = booking.customerId.fullname.toLowerCase();
-    const isMatchingLocation = selectedLocation ? booking.roomCateId.locationId === selectedLocation : true;
-    const isMatchingCheckin = isDateInRange(booking.bookingId.checkin, checkinFilter, checkoutFilter);
-    const isMatchingStatus = statusFilter ? booking.bookingId.status === statusFilter : true;
+    const bookingId = booking.bookingId?._id.toLowerCase();
+    const customerName = booking.customerId?.fullname.toLowerCase();
+    const isMatchingLocation = selectedLocation ? booking.roomCateId?.locationId === selectedLocation : true;
+    const isMatchingCheckin = isDateInRange(booking.bookingId?.checkin, checkinFilter, checkoutFilter);
+    const isMatchingStatus = statusFilter ? booking.bookingId?.status === statusFilter : true;
 
     return (
       isMatchingLocation &&

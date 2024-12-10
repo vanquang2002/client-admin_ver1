@@ -55,6 +55,10 @@ const ListRoom = () => {
       .get('https://server-ver1.onrender.com/bookings')
       .then((response) => setBookings(response.data))
       .catch((error) => console.error('Error fetching bookings:', error));
+    axios
+      .get('https://server-ver1.onrender.com/orderRooms')
+      .then((response) => setOrderRooms(response.data))
+      .catch((error) => console.error('Error fetching bookings:', error));
   }, []);
 
   const filteredRooms = selectedLocation
@@ -87,7 +91,7 @@ const ListRoom = () => {
     setShowModal(true);
   };
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
     if (updatedStatus === "Đã book" || updatedStatus === "Đang sử dụng") {
       const booking = bookings.find((b) => b._id === bookingId);
 
@@ -100,17 +104,21 @@ const ListRoom = () => {
         setBookingError("Booking phải ở trạng thái 'Đã đặt' hoặc 'Đã check-in'.");
         return;
       }
+      console.log(bookingId);
 
-      axios
-        .get(`${BASE_URL}/orderRooms/booking/${bookingId}`)
-        .then((response) => setOrderRooms(response.data))
-        .catch((error) => console.error('Error fetching order rooms:', error));
-      console.log(orderRooms);
-      if (orderRooms[0].roomCateId?.locationId !== selectedRoom.roomCategoryId?.locationId) {
+      const filteredBookings = orderRooms.filter((orderRoom) => {
+        return orderRoom.bookingId._id === bookingId;
+      });
+
+
+      if (filteredBookings[0]?.roomCateId?.locationId !== selectedRoom?.roomCategoryId?.locationId) {
         setBookingError("Booking này là của cơ sở khác. Vui lòng kiểm tra lại!");
-        return;
+        return
       }
+
+
     }
+
 
     setBookingError(''); // Xóa lỗi nếu hợp lệ
 
@@ -153,9 +161,13 @@ const ListRoom = () => {
           })
       })
       .catch((error) => console.error('Error updating room:', error));
+
+
   };
 
-  const handleClose = () => setShowModal(false);
+
+
+  const handleClose = () => { setShowModal(false); setBookingError('') };
 
   return (
     <Container>

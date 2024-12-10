@@ -65,15 +65,15 @@ const ListBooking = () => {
     const today = new Date(); // Lấy ngày hiện tại
     today.setHours(0, 0, 0, 0)
     // Lặp qua tất cả các booking để kiểm tra điều kiện
-    bookings.forEach((booking) => {
+    bookings?.forEach((booking) => {
       // Chuyển checkout date thành đối tượng Date để so sánh
-      const checkoutDate = new Date(booking.bookingId.checkout);
+      const checkoutDate = new Date(booking.bookingId?.checkout);
       checkoutDate.setHours(0, 0, 0, 0)
       // Kiểm tra nếu ngày hiện tại >= ngày checkout của booking
-      if (today >= checkoutDate && booking.bookingId.status === 'Đã đặt') {
+      if (today >= checkoutDate && booking.bookingId?.status === 'Đã đặt') {
         // Gửi yêu cầu API để cập nhật trạng thái của booking và dịch vụ
         axios
-          .put(`${BASE_URL}/bookings/update-statuses/${booking.bookingId._id}`, {
+          .put(`${BASE_URL}/bookings/update-statuses/${booking.bookingId?._id}`, {
             orderServiceStatus: "Đã hủy",
             bookingStatus: "Đã hủy"
           })

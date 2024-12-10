@@ -105,15 +105,15 @@ const ListBooking = () => {
 
   const handleEditClick = (booking) => {
     setSelectedBooking(booking);
-    setUpdatedPayment(booking.bookingId.payment);
-    setUpdatedStatus(booking.bookingId.status);
-    setUpdatedCheckin(booking.bookingId.checkin);
-    setUpdatedCheckout(booking.bookingId.checkout);
+    setUpdatedPayment(booking.bookingId?.payment);
+    setUpdatedStatus(booking.bookingId?.status);
+    setUpdatedCheckin(booking.bookingId?.checkin);
+    setUpdatedCheckout(booking.bookingId?.checkout);
     setShowModal(true);
   };
 
   const handleRowClick = async (booking) => {
-    navigate(`/bookings/${booking.bookingId._id}`);
+    navigate(`/bookings/${booking.bookingId?._id}`);
   };
 
   const handleUpdateBooking = () => {
@@ -129,7 +129,7 @@ const ListBooking = () => {
     };
 
     axios
-      .put(`${BASE_URL}/bookings/${selectedBooking.bookingId._id}`, updatedBooking.bookingId)
+      .put(`${BASE_URL}/bookings/${selectedBooking.bookingId?._id}`, updatedBooking.bookingId)
       .then((response) => {
         setBookings((prevBookings) =>
           prevBookings.map((booking) =>
@@ -159,7 +159,7 @@ const ListBooking = () => {
         // Cập nhật lại trạng thái booking trong state sau khi nhận được dữ liệu từ server
         setBookings((prevBookings) =>
           prevBookings.map((prevBooking) =>
-            prevBooking.bookingId._id === updatedBooking._id
+            prevBooking.bookingId?._id === updatedBooking._id
               ? { ...prevBooking, status: updatedBooking.status }
               : prevBooking
           )
@@ -308,17 +308,17 @@ const ListBooking = () => {
         </thead>
         <tbody>
           {currentBookings.map((booking) => (
-            <tr key={booking._id} onClick={() => handleRowClick(booking)} style={{ cursor: 'pointer' }}>
-              <td>{booking.bookingId._id}</td>
-              <td>{booking.customerId.fullname}</td>
-              <td>{booking.roomCateId.name}</td>
+            <tr key={booking?._id} onClick={() => handleRowClick(booking)} style={{ cursor: 'pointer' }}>
+              <td>{booking.bookingId?._id}</td>
+              <td>{booking.customerId?.fullname}</td>
+              <td>{booking.roomCateId?.name}</td>
               <td className="text-center">{booking.quantity}</td>
-              <td>{formatCurrency(booking.quantity * booking.roomCateId.price)}</td>
-              <td>{formatDate(booking.bookingId.checkin)}</td>
-              <td>{formatDate(booking.bookingId.checkout)}</td>
-              <td>{booking.bookingId.status}</td>
+              <td>{formatCurrency(booking.quantity * booking.roomCateId?.price)}</td>
+              <td>{formatDate(booking.bookingId?.checkin)}</td>
+              <td>{formatDate(booking.bookingId?.checkout)}</td>
+              <td>{booking.bookingId?.status}</td>
               <td>
-                {booking.bookingId.status === "Đã đặt" && (
+                {booking.bookingId?.status === "Đã đặt" && (
                   <>
                     {userRole !== "admin" && (
                       <Button
@@ -326,7 +326,7 @@ const ListBooking = () => {
                         className="me-2"
                         onClick={(e) => {
                           e.stopPropagation(); // Ngăn sự kiện onClick của hàng
-                          navigate(`/checkin/${booking.bookingId._id}`);
+                          navigate(`/checkin/${booking.bookingId?._id}`);
                         }}
                       >
                         Check-in
@@ -335,14 +335,14 @@ const ListBooking = () => {
                     )}
                   </>
                 )}
-                {booking.bookingId.status === "Yêu cầu hoàn tiền" && (
+                {booking.bookingId?.status === "Yêu cầu hoàn tiền" && (
                   <>
                     {userRole === "admin" && (
                       <Button
                         variant="danger"
                         onClick={(e) => {
                           e.stopPropagation(); // Ngăn sự kiện onClick của hàng
-                          handleCancelClick(booking.bookingId);
+                          handleCancelClick(booking?.bookingId);
                         }}
                       >
                         Hủy
@@ -376,15 +376,15 @@ const ListBooking = () => {
             <Modal.Title>Thông tin Đặt phòng</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p>Mã Đặt phòng: {selectedBookingDetails.bookingId._id}</p>
-            <p>Tên khách: {selectedBookingDetails.customerId.fullname}</p>
-            <p>Phòng: {selectedBookingDetails.roomCateId.name}</p>
+            <p>Mã Đặt phòng: {selectedBookingDetails.bookingId?._id}</p>
+            <p>Tên khách: {selectedBookingDetails.customerId?.fullname}</p>
+            <p>Phòng: {selectedBookingDetails.roomCateId?.name}</p>
             <p>Số lượng: {selectedBookingDetails.quantity}</p>
-            <p>Tổng tiền: {selectedBookingDetails.quantity * selectedBookingDetails.roomCateId.price}</p>
-            <p>Checkin: {formatDate(selectedBookingDetails.bookingId.checkin)}</p>
-            <p>Checkout: {formatDate(selectedBookingDetails.bookingId.checkout)}</p>
-            <p>Thanh toán: {selectedBookingDetails.bookingId.payment}</p>
-            <p>Trạng thái: {selectedBookingDetails.bookingId.status}</p>
+            <p>Tổng tiền: {selectedBookingDetails.quantity * selectedBookingDetails.roomCateId?.price}</p>
+            <p>Checkin: {formatDate(selectedBookingDetails.bookingId?.checkin)}</p>
+            <p>Checkout: {formatDate(selectedBookingDetails.bookingId?.checkout)}</p>
+            <p>Thanh toán: {selectedBookingDetails.bookingId?.payment}</p>
+            <p>Trạng thái: {selectedBookingDetails.bookingId?.status}</p>
             <p>Tên giấy tờ: {selectedBookingDetails.identifyName || 'Chưa có thông tin'}</p>
             <p>Mã giấy tờ: {selectedBookingDetails.identifyCode || 'Chưa có thông tin'}</p>
           </Modal.Body>
@@ -403,7 +403,7 @@ const ListBooking = () => {
                 variant="info"
                 style={{ margin: ' 0px 10px' }}
                 onClick={() => {
-                  navigate('/historyBookingChange', { state: { bookingId: selectedBookingDetails.bookingId._id } }); // Chuyển hướng với bookingId
+                  navigate('/historyBookingChange', { state: { bookingId: selectedBookingDetails.bookingId?._id } }); // Chuyển hướng với bookingId
                 }}
               >
                 Lịch sử

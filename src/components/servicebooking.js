@@ -221,7 +221,7 @@ const ServiceBookingList = () => {
       </div>
 
       {bookings.length === 0 ? (
-        <p>No service bookings found.</p>
+        <p>Loading.....</p>
       ) : (
         <div>
           <table className="table table-striped">

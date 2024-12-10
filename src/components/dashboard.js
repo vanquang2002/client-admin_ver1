@@ -46,7 +46,7 @@ const Dashboard = () => {
   });
 
 
-  const bookings = filteredOrderData.map((order) => order.bookingId);
+  const bookings = filteredOrderData.map((order) => order?.bookingId);
   const uniqueBookings = Array.from(new Set(bookings.map(booking => JSON.stringify(booking))))
     .map(item => JSON.parse(item));
 
@@ -59,7 +59,7 @@ const Dashboard = () => {
   const aggregateBookingByMonth = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
       if (order?.updatedAt && isValidDate(order?.updatedAt)) {
-        const updatedDate = new Date(order.updatedAt);
+        const updatedDate = new Date(order?.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedMonth = format(updatedDate, 'MM/yyyy'); // Group by month
 
@@ -72,9 +72,9 @@ const Dashboard = () => {
             };
           }
 
-          acc[formattedMonth].quantity += order.quantity || 0;
-          acc[formattedMonth].price += order.price || 0;
-          acc[formattedMonth].humans += order.humans || 0;
+          acc[formattedMonth].quantity += order?.quantity || 0;
+          acc[formattedMonth].price += order?.price || 0;
+          acc[formattedMonth].humans += order?.humans || 0;
         }
       }
       return acc;
@@ -101,8 +101,8 @@ const Dashboard = () => {
   };
   const aggregateOrderByMonth = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
-      if (order.bookingId?.updatedAt && isValidDate(order.bookingId?.updatedAt)) {
-        const updatedDate = new Date(order.bookingId?.updatedAt);
+      if (order.bookingId?.updatedAt && isValidDate(order?.bookingId?.updatedAt)) {
+        const updatedDate = new Date(order?.bookingId?.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedMonth = format(updatedDate, 'MM/yyyy'); // Group by month
 
@@ -115,9 +115,9 @@ const Dashboard = () => {
             };
           }
 
-          acc[formattedMonth].quantity += order.quantity || 0;
-          acc[formattedMonth].price += order.price || 0;
-          acc[formattedMonth].humans += order.humans || 0;
+          acc[formattedMonth].quantity += order?.quantity || 0;
+          acc[formattedMonth].price += order?.price || 0;
+          acc[formattedMonth].humans += order?.humans || 0;
         }
       }
       return acc;
@@ -206,9 +206,9 @@ const Dashboard = () => {
             };
           }
 
-          acc[formattedDate].quantity += order.quantity || 0;
-          acc[formattedDate].price += order.price || 0;
-          acc[formattedDate].humans += order.humans || 0;
+          acc[formattedDate].quantity += order?.quantity || 0;
+          acc[formattedDate].price += order?.price || 0;
+          acc[formattedDate].humans += order?.humans || 0;
         }
       }
       return acc;
@@ -222,8 +222,8 @@ const Dashboard = () => {
   };
   const aggregateBookingByDay = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
-      if (order.updatedAt && isValidDate(order.updatedAt)) {
-        const updatedDate = new Date(order.updatedAt);
+      if (order?.updatedAt && isValidDate(order?.updatedAt)) {
+        const updatedDate = new Date(order?.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedDate = format(updatedDate, 'dd/MM/yyyy'); // Group by day
 
@@ -236,9 +236,9 @@ const Dashboard = () => {
             };
           }
 
-          acc[formattedDate].quantity += order.quantity || 0;
-          acc[formattedDate].price += order.price || 0;
-          acc[formattedDate].humans += order.humans || 0;
+          acc[formattedDate].quantity += order?.quantity || 0;
+          acc[formattedDate].price += order?.price || 0;
+          acc[formattedDate].humans += order?.humans || 0;
         }
       }
       return acc;

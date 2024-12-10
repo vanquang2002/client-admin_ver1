@@ -62,10 +62,10 @@ const ListRoom = () => {
   }, []);
 
   const filteredRooms = selectedLocation
-    ? roomData.filter((room) => room.roomCategoryId.locationId === selectedLocation)
+    ? roomData.filter((room) => room.roomCategoryId?.locationId === selectedLocation)
     : roomData;
   const filteredCategories = selectedLocation
-    ? categories.filter((category) => category.locationId._id === selectedLocation)
+    ? categories.filter((category) => category.locationId?._id === selectedLocation)
     : categories;
   // Count rooms by status
   const countRoomsByStatus = (rooms) => {
@@ -85,7 +85,7 @@ const ListRoom = () => {
 
   const handleRoomClick = (room) => {
     setSelectedRoom(room);
-    setUpdatedCategory(room.roomCategoryId._id);
+    setUpdatedCategory(room.roomCategoryId?._id);
     setUpdatedStatus(room.status);
     setBookingId(room.bookingId?._id || '');
     setShowModal(true);
@@ -107,7 +107,7 @@ const ListRoom = () => {
       console.log(bookingId);
 
       const filteredBookings = orderRooms.filter((orderRoom) => {
-        return orderRoom.bookingId._id === bookingId;
+        return orderRoom.bookingId?._id === bookingId;
       });
 
 

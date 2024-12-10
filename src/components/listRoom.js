@@ -38,21 +38,21 @@ const ListRoom = () => {
       }
     }
     axios
-      .get('http://localhost:9999/rooms')
+      .get('https://server-ver1.onrender.com/rooms')
       .then((response) => setRoomData(response.data))
       .catch((error) => console.error('Error fetching room data:', error));
 
     axios
-      .get('http://localhost:9999/locations')
+      .get('https://server-ver1.onrender.com/locations')
       .then((response) => setLocation(response.data))
       .catch((error) => console.error('Error fetching locations:', error));
 
     axios
-      .get('http://localhost:9999/roomCategories')
+      .get('https://server-ver1.onrender.com/roomCategories')
       .then((response) => setCategories(response.data))
       .catch((error) => console.error('Error fetching room categories:', error));
     axios
-      .get('http://localhost:9999/bookings')
+      .get('https://server-ver1.onrender.com/bookings')
       .then((response) => setBookings(response.data))
       .catch((error) => console.error('Error fetching bookings:', error));
   }, []);
@@ -136,10 +136,10 @@ const ListRoom = () => {
     console.log(updatedRoom);
 
     axios
-      .put(`http://localhost:9999/rooms/${selectedRoom._id}`, updatedRoom)
+      .put(`https://server-ver1.onrender.com/rooms/${selectedRoom._id}`, updatedRoom)
       .then((response) => {
         axios
-          .get('http://localhost:9999/rooms')
+          .get('https://server-ver1.onrender.com/rooms')
           .then((res) => setRoomData(res.data))
           .catch((error) => console.error('Error fetching updated room data:', error));
 
@@ -147,7 +147,7 @@ const ListRoom = () => {
 
         const newNotification = { content: `Phòng ${selectedRoom.code} đã chuyển trạng thái sang ${updatedStatus}.`, locationId: selectedLocation };
         axios
-          .post("http://localhost:9999/chats/send", newNotification)
+          .post("https://server-ver1.onrender.com/chats/send", newNotification)
           .then((response) => {
             console.log(response.data);
           })

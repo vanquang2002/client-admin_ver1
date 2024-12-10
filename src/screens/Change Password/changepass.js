@@ -43,7 +43,7 @@ const ChangePassword = () => {
       const userName = JSON.parse(localStorage.getItem('user')).username;
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        'http://localhost:9999/change-password',
+        'https://server-ver1.onrender.com/change-password',
         {
           username: userName,
           currentPassword: oldPassword,

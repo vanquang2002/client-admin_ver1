@@ -189,7 +189,7 @@ const ListBooking = () => {
     return true;
   };
 
-  const filteredBookings = bookings.filter((booking) => {
+  const filteredBookings = bookings?.filter((booking) => {
     const formattedValue = searchQuery.trim().replace(/\s+/g, ' ');
     const bookingId = booking.bookingId?._id.toLowerCase();
     const customerName = booking.customerId?.fullname.toLowerCase();

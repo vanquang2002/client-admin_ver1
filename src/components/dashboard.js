@@ -40,8 +40,8 @@ const Dashboard = () => {
 
   }, []);
   const filteredOrderData = orderData.filter((order) => {
-    const matchesLocation = selectedLocation ? order.roomCateId.locationId === selectedLocation : true;
-    const matchesStatus = order.bookingId.status ? order.bookingId.status === 'Đã hoàn thành' : true;
+    const matchesLocation = selectedLocation ? order.roomCateId?.locationId === selectedLocation : true;
+    const matchesStatus = order.bookingId?.status ? order.bookingId?.status === 'Đã hoàn thành' : true;
     return matchesLocation && matchesStatus;
   });
 
@@ -101,8 +101,8 @@ const Dashboard = () => {
   };
   const aggregateOrderByMonth = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
-      if (order.bookingId.updatedAt && isValidDate(order.bookingId.updatedAt)) {
-        const updatedDate = new Date(order.bookingId.updatedAt);
+      if (order.bookingId?.updatedAt && isValidDate(order.bookingId?.updatedAt)) {
+        const updatedDate = new Date(order.bookingId?.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedMonth = format(updatedDate, 'MM/yyyy'); // Group by month
 
@@ -192,8 +192,8 @@ const Dashboard = () => {
 
   const aggregateOrderByDay = (data, year) => {
     const aggregated = data.reduce((acc, order) => {
-      if (order.bookingId.updatedAt && isValidDate(order.bookingId.updatedAt)) {
-        const updatedDate = new Date(order.bookingId.updatedAt);
+      if (order.bookingId?.updatedAt && isValidDate(order.bookingId?.updatedAt)) {
+        const updatedDate = new Date(order.bookingId?.updatedAt);
         if (updatedDate.getFullYear() === year) {
           const formattedDate = format(updatedDate, 'dd/MM/yyyy'); // Group by day
 

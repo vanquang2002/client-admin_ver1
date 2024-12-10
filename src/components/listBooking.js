@@ -201,7 +201,7 @@ const ListBooking = () => {
       isMatchingLocation &&
       isMatchingCheckin &&
       isMatchingStatus &&
-      (bookingId.includes(formattedValue.toLowerCase()) || customerName.includes(formattedValue.toLowerCase()))
+      (bookingId?.includes(formattedValue.toLowerCase()) || customerName?.includes(formattedValue.toLowerCase()))
     );
   });
 

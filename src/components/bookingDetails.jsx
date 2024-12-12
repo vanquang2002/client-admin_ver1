@@ -446,6 +446,7 @@ const BookingDetails = () => {
         // Kiểm tra nếu dịch vụ được hủy trước ngày check-in 2 ngày
         if (daysBeforeCheckin >= 2) {
             if (window.confirm('Bạn có chắc muốn hủy dịch vụ này không?')) {
+                setIsUpdating(true);
                 // Xóa dịch vụ khỏi danh sách
                 const updatedServices = orderServices.filter((service) => service._id !== deleteService._id);
                 setOrderServices(updatedServices); // Cập nhật lại danh sách dịch vụ đã đặt
@@ -483,6 +484,8 @@ const BookingDetails = () => {
                     toast.error('Có lỗi xảy ra khi cập nhật thông tin. Vui lòng thử lại.', {
                         position: "top-right",
                     });
+                } finally {
+                    setIsUpdating(false);
                 }
             }
         } else {
@@ -509,6 +512,7 @@ const BookingDetails = () => {
         // Kiểm tra nếu phòng được hủy trước ngày check-in 2 ngày
         if (daysBeforeCheckin >= 2 && orderRooms.length > 1) {
             if (window.confirm('Bạn có chắc muốn hủy phòng này không?')) {
+                setIsUpdating(true);
                 // Xóa phòng khỏi danh sách
                 const updatedRooms = orderRooms.filter((room) => room._id !== OrderRoom._id);
                 setOrderRooms(updatedRooms); // Cập nhật lại danh sách phòng đã đặt
@@ -548,6 +552,9 @@ const BookingDetails = () => {
                         position: "top-right",
                     });
                 }
+                finally {
+                    setIsUpdating(false);
+                }
             };
         } else {
             if (orderRooms.length === 1) {
@@ -564,6 +571,7 @@ const BookingDetails = () => {
     }
 
     const handleUpdateRoomAll = async () => {
+        setIsUpdating(true);
         try {
             // Gọi hàm để tạo order rooms và nhận về tổng giá từ result
             const result = await roomCategoriesRef.current.createAgencyOrderRoom(orderRooms[0]?.bookingId?.price);
@@ -615,6 +623,9 @@ const BookingDetails = () => {
             });
 
         }
+        finally {
+            setIsUpdating(false);
+        }
     };
 
 
@@ -662,6 +673,7 @@ const BookingDetails = () => {
     }
 
     const handleSave = async () => {
+        setIsUpdating(true);
         try {
             // Prepare the update data
             const bookingId = orderRooms[0]?.bookingId?._id;
@@ -699,6 +711,9 @@ const BookingDetails = () => {
                 position: "top-right",
             });
         }
+        finally {
+            setIsUpdating(false);
+        }
     };
 
     const handleBackToList = () => {
@@ -723,7 +738,9 @@ const BookingDetails = () => {
     return (
         <div className="booking-details">
             <ToastContainer />
-            <h2>Thông tin Đặt phòng {!refundTimeOut && <span className='text-danger'>Đã hết thời gian hủy đơn và cập nhật phòng</span>}</h2>
+            <h2>Thông tin Đặt phòng {(orderRooms[0].bookingId?.status !== "Đã đặt" && orderRooms[0].bookingId?.status !== "Đã check-in") ?
+                (<span className='text-bg-secondary px-2'>{orderRooms[0].bookingId?.status}</span>)
+                : (!refundTimeOut && <span className='text-danger'>Đã hết thời gian hủy đơn và cập nhật phòng</span>)}</h2>
             <div>
                 <h3>
                     Mã Đặt phòng: {orderRooms[0]?.bookingId?._id || "N/A"} - Mã hợp đồng:{" "}
@@ -944,10 +961,10 @@ const BookingDetails = () => {
                     <Button
                         variant="primary"
                         onClick={handleUpdateRoomAll}
-                    // onClick={handleUpdateRoomQuantities}
-                    // disabled={quantityError === null}
+                        // onClick={handleUpdateRoomQuantities}
+                        disabled={isUpdating}
                     >
-                        Thêm dữ liệu đặt phòng mới
+                        {isUpdating ? 'Đang cập nhật...' : 'Thêm dữ liệu đặt phòng mới'}
                     </Button>
                 </section>}
 
@@ -984,11 +1001,11 @@ const BookingDetails = () => {
                                         <td>
                                             <Button
                                                 variant="danger"
-                                                disabled={service.status !== "Đã đặt" || (orderRooms[0].bookingId?.status !== 'Đã check-in' && orderRooms[0].bookingId?.status !== 'Đã đặt')}
+                                                disabled={isUpdating || service.status !== "Đã đặt" || (orderRooms[0].bookingId?.status !== 'Đã check-in' && orderRooms[0].bookingId?.status !== 'Đã đặt')}
                                                 onClick={() => handleCancelService(service, (service.otherServiceId.price * service.quantity))}
 
                                             >
-                                                Hủy Dịch Vụ
+                                                {isUpdating ? 'Đang cập nhật...' : 'Hủy Dịch Vụ'}
                                             </Button>
                                         </td>
                                     </tr>
@@ -1047,8 +1064,9 @@ const BookingDetails = () => {
                     className='mx-2'
                     onClick={handleBackToList}
                     variant="warning"
+                    disabled={isUpdating}
                 >
-                    Về danh sách đặt phòng
+                    {isUpdating ? 'Đang cập nhật...' : 'Về danh sách đặt phòng'}
                 </Button>
                 {/* Nút Check-out */}
                 <Button
@@ -1072,13 +1090,16 @@ const BookingDetails = () => {
                         <p><strong>Còn nợ:</strong> {newBookingPrice - orderRooms[0].bookingId?.payment} VND</p>
                     </Modal.Body>
                     <Modal.Footer className="justify-content-center">
-                        <Button variant="secondary" onClick={handleCloseModal}>
-                            Hủy bỏ
+                        <Button variant="secondary" onClick={handleCloseModal}
+                            disabled={isUpdating}
+                        >
+                            {isUpdating ? 'Đang cập nhật...' : 'Hủy bỏ'}
                         </Button>
                         <Button variant="primary"
                             //  onClick={handleConfirmCheckout}>
-                            onClick={handleCheckoutAndUpService}>
-                            Xác nhận Check-out
+                            onClick={handleCheckoutAndUpService}
+                            disabled={isUpdating}>
+                            {isUpdating ? 'Đang cập nhật...' : 'Xác nhận Check-out'}
                         </Button>
                     </Modal.Footer>
                 </Modal>
@@ -1089,6 +1110,7 @@ const BookingDetails = () => {
                         onClick={() => {
                             navigate('/historyBookingChange', { state: { bookingId: orderRooms[0].bookingId._id } }); // Chuyển hướng với bookingId
                         }}
+                        disabled={isUpdating}
                     >
                         Lịch sử
                     </Button>

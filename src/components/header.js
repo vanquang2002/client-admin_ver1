@@ -46,8 +46,14 @@ const Header = () => {
     fetchNotifications();
   }, [notifications]);
 
+  // const filteredNotifications = notifications.filter(
+  //   (notification) => notification.locationId?._id === location || location === ''
+  // );
+
+  const now = new Date();
+  const twoDaysAgo = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
   const filteredNotifications = notifications.filter(
-    (notification) => notification.locationId?._id === location || location === ''
+    (notification) => (notification.locationId?._id === location || location === '') && (new Date(notification.createdAt) >= twoDaysAgo)
   );
 
   const timeAgo = (inputTime) => {

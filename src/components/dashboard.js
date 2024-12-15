@@ -275,35 +275,69 @@ const Dashboard = () => {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  // const handleExport = async () => {
+  //   try {
+  //     // Gửi yêu cầu GET đến API, nhận dữ liệu dạng blob
+  //     const response = await axios.get("https://server-ver1.onrender.com/orderRooms/excel", {
+  //       responseType: 'blob', // Quan trọng: nhận dữ liệu dạng blob
+  //     });
+
+  //     // Tạo file từ dữ liệu nhận được
+  //     const blob = new Blob([response.data], {
+  //       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  //     });
+
+  //     // Lưu file sử dụng FileSaver.js hoặc cách thủ công
+  //     const fileName = `Bao-cao-doanh-thu.xlsx`;
+  //     const url = window.URL.createObjectURL(blob);
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', fileName); // Đặt tên file
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+
+  //     // Thông báo thành công
+  //     setMessage("Xuất file thành công!");
+  //   } catch (error) {
+  //     console.error("Error exporting Excel:", error);
+  //     setMessage("Có lỗi xảy ra khi xuất file.");
+  //   }
+  // };
+
   const handleExport = async () => {
-    try {
-      // Gửi yêu cầu GET đến API, nhận dữ liệu dạng blob
-      const response = await axios.get("https://server-ver1.onrender.com/orderRooms/excel", {
-        responseType: 'blob', // Quan trọng: nhận dữ liệu dạng blob
-      });
+  try {
+    const response = await axios.get(`${BASE_URL}/orderRooms/excel`, {
+      params: {
+        locationId: selectedLocation,
+        month: selectedMonth ? parseInt(selectedMonth.split('/')[0]) : undefined,
+        year: selectedMonth ? parseInt(selectedMonth.split('/')[1]) : undefined,
+        status: 'Đã hoàn thành', // Hoặc trạng thái khác nếu cần
+      },
+      responseType: 'blob', // Quan trọng: nhận dữ liệu dạng blob
+    });
 
-      // Tạo file từ dữ liệu nhận được
-      const blob = new Blob([response.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      });
+    const blob = new Blob([response.data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
 
-      // Lưu file sử dụng FileSaver.js hoặc cách thủ công
-      const fileName = `Bao-cao-doanh-thu.xlsx`;
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName); // Đặt tên file
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+    const fileName = `Bao-cao-doanh-thu-${selectedMonth || 'Tat-ca'}.xlsx`;
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
 
-      // Thông báo thành công
-      setMessage("Xuất file thành công!");
-    } catch (error) {
-      console.error("Error exporting Excel:", error);
-      setMessage("Có lỗi xảy ra khi xuất file.");
-    }
-  };
+    setMessage('Xuất file thành công!');
+  } catch (error) {
+    console.error('Error exporting Excel:', error);
+    setMessage('Có lỗi xảy ra khi xuất file.');
+  }
+};
+
+  
   return (
     <Container>
       <h2 className="text-center my-4">Bảng thống kê</h2>

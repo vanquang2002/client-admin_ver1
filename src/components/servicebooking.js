@@ -81,34 +81,67 @@ const ServiceBookingList = () => {
   }, [staff]);
 
   // Handle search with status filter
+  // useEffect(() => {
+  //   const filtered = bookings.filter((booking) => {
+  //     const matchesBookingId = booking.bookingId.toString().includes(searchBookingId.trim().replace(/\s+/g, ' '));
+  //     const matchesCustomerName = booking.customerName
+  //       .toLowerCase()
+  //       .includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '));
+  //     const matchesServiceName = booking.serviceName
+  //       .toLowerCase()
+  //       .includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '));
+  //     const matchesStartTime =
+  //       !startTime ||
+  //       new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10);
+
+  //     const matchesStatus =
+  //       !searchStatus || booking.status === searchStatus; // Apply status filter
+
+  //     return (
+  //       matchesBookingId &&
+  //       matchesCustomerName &&
+  //       matchesServiceName &&
+  //       matchesStartTime &&
+  //       matchesStatus // Include status filter in the conditions
+  //     );
+  //   });
+
+  //   setFilteredBookings(filtered);
+  //   setCurrentPage(1); // Reset to the first page when filtering
+  // }, [searchBookingId, searchCustomerName, searchServiceName, startTime, endTime, searchStatus, bookings]);
+
   useEffect(() => {
-    const filtered = bookings.filter((booking) => {
-      const matchesBookingId = booking.bookingId.toString().includes(searchBookingId.trim().replace(/\s+/g, ' '));
-      const matchesCustomerName = booking.customerName
-        .toLowerCase()
-        .includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '));
-      const matchesServiceName = booking.serviceName
-        .toLowerCase()
-        .includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '));
-      const matchesStartTime =
-        !startTime ||
-        new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10);
+  const filtered = bookings.filter((booking) => {
+    const matchesBookingId =
+      booking.bookingId && booking.bookingId.toString().includes(searchBookingId.trim().replace(/\s+/g, ' '));
+      
+    const matchesCustomerName =
+      booking.customerName &&
+      booking.customerName.toLowerCase().includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '));
 
-      const matchesStatus =
-        !searchStatus || booking.status === searchStatus; // Apply status filter
+    const matchesServiceName =
+      booking.serviceName &&
+      booking.serviceName.toLowerCase().includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '));
 
-      return (
-        matchesBookingId &&
-        matchesCustomerName &&
-        matchesServiceName &&
-        matchesStartTime &&
-        matchesStatus // Include status filter in the conditions
-      );
-    });
+    const matchesStartTime =
+      !startTime ||
+      (booking.time && new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10));
 
-    setFilteredBookings(filtered);
-    setCurrentPage(1); // Reset to the first page when filtering
-  }, [searchBookingId, searchCustomerName, searchServiceName, startTime, endTime, searchStatus, bookings]);
+    const matchesStatus = !searchStatus || booking.status === searchStatus;
+
+    return (
+      matchesBookingId &&
+      matchesCustomerName &&
+      matchesServiceName &&
+      matchesStartTime &&
+      matchesStatus
+    );
+  });
+
+  setFilteredBookings(filtered);
+  setCurrentPage(1); // Reset to the first page when filtering
+}, [searchBookingId, searchCustomerName, searchServiceName, startTime, endTime, searchStatus, bookings]);
+
 
   const handleStatusChange = async (bookingId, newStatus) => {
     try {

@@ -20,7 +20,7 @@ const Header = () => {
       } else if (user.role === 'staff_cb') {
         setLocation('66f6c59f285571f28087c16d');
       } else if (user.role === 'staff_mk') {
-        setLocation('66f6c5c9285571f28087c16a');
+        setLocation('66f6c42f285571f28087c16a');
       }
     }
   }, [user]);

@@ -126,7 +126,7 @@ state: {
           bookingId={id}
         />
       )}
-      {selectedLocation === '66f6c5c9285571f28087c16a' && (
+      {selectedLocation === '66f6c42f285571f28087c16a' && (
         <MinhKhaiRooms
           rooms={filteredRooms}
           onClick={handleRoomSelect}

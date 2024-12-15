@@ -34,7 +34,7 @@ const ListRoom = () => {
       } else if (storedUser.role === 'staff_cb') {
         setSelectedLocation('66f6c59f285571f28087c16d');
       } else if (storedUser.role === 'staff_mk') {
-        setSelectedLocation('66f6c5c9285571f28087c16a');
+        setSelectedLocation('66f6c42f285571f28087c16a');
       }
     }
     axios

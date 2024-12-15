@@ -307,7 +307,7 @@ const Dashboard = () => {
 
   const handleExport = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/orderRooms/excel`, {
+    const response = await axios.get(`https://server-ver1.onrender.com/orderRooms/excel`, {
       params: {
         locationId: selectedLocation,
         month: selectedMonth ? parseInt(selectedMonth.split('/')[0]) : undefined,

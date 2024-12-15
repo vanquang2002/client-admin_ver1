@@ -154,7 +154,8 @@ const AddIdentifyForm = forwardRef(({ }, ref) => {
 
         // Kiểm tra nơi cấp (Issuing location)
         // const locationPattern = /^[A-Za-zÀ-ÿ0-9]+([ ,.-][A-Za-zÀ-ÿ0-9]+)*$/;
-        const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ,.-][A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
+        //const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ,.-][A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
+        const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ]?[,. -][ ]?[A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
 
 
         if (!identifycationData.location.trim()) {

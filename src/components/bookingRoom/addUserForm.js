@@ -43,7 +43,8 @@ const AddUserForm = forwardRef(({ }, ref) => {
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const phonePattern = /^(03|05|07|08|09)\d{8,9}$/;
         // const locationPattern = /^[A-Za-zÀ-ÿ0-9]+([ ,.-][A-Za-zÀ-ÿ0-9]+)*$/;
-        const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ,.-][A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
+        const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ]?[,. -][ ]?[A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
+        //const locationPattern = /^[A-Za-zÀ-ÿà-ỹ0-9]+([ ,.-][A-Za-zÀ-ÿà-ỹ0-9]+)*$/;
         const today = new Date();
 
         // Customer validation

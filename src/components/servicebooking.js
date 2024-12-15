@@ -112,20 +112,25 @@ const ServiceBookingList = () => {
 
   useEffect(() => {
   const filtered = bookings.filter((booking) => {
+    if (!booking) return false; // Bỏ qua nếu `booking` không tồn tại
+
     const matchesBookingId =
       booking.bookingId && booking.bookingId.toString().includes(searchBookingId.trim().replace(/\s+/g, ' '));
-      
+
     const matchesCustomerName =
-      booking.customerName &&
-      booking.customerName.toLowerCase().includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '));
+      booking.customerName
+        ? booking.customerName.toLowerCase().includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '))
+        : false;
 
     const matchesServiceName =
-      booking.serviceName &&
-      booking.serviceName.toLowerCase().includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '));
+      booking.serviceName
+        ? booking.serviceName.toLowerCase().includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '))
+        : false;
 
     const matchesStartTime =
       !startTime ||
-      (booking.time && new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10));
+      (booking.time &&
+        new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10));
 
     const matchesStatus = !searchStatus || booking.status === searchStatus;
 
@@ -141,7 +146,6 @@ const ServiceBookingList = () => {
   setFilteredBookings(filtered);
   setCurrentPage(1); // Reset to the first page when filtering
 }, [searchBookingId, searchCustomerName, searchServiceName, startTime, endTime, searchStatus, bookings]);
-
 
   const handleStatusChange = async (bookingId, newStatus) => {
     try {

@@ -307,15 +307,20 @@ const Dashboard = () => {
 
   const handleExport = async () => {
   try {
+    const params = {
+      locationId: selectedLocation,
+      month: selectedMonth ? parseInt(selectedMonth.split('/')[0]) : undefined,
+      year: selectedMonth ? parseInt(selectedMonth.split('/')[1]) : undefined,
+      status: 'Đã hoàn thành',
+    };
+    console.log('Query params gửi tới BE:', params);
+
     const response = await axios.get(`https://server-ver1.onrender.com/orderRooms/excel`, {
-      params: {
-        locationId: selectedLocation,
-        month: selectedMonth ? parseInt(selectedMonth.split('/')[0]) : undefined,
-        year: selectedMonth ? parseInt(selectedMonth.split('/')[1]) : undefined,
-        status: 'Đã hoàn thành', // Hoặc trạng thái khác nếu cần
-      },
-      responseType: 'blob', // Quan trọng: nhận dữ liệu dạng blob
+      params,
+      responseType: 'blob',
     });
+
+    console.log('Response nhận từ BE:', response);
 
     const blob = new Blob([response.data], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -332,10 +337,17 @@ const Dashboard = () => {
 
     setMessage('Xuất file thành công!');
   } catch (error) {
-    console.error('Error exporting Excel:', error);
+    if (error.response) {
+      console.error('Lỗi từ BE:', error.response.status, error.response.data);
+    } else if (error.request) {
+      console.error('Lỗi khi gửi request:', error.request);
+    } else {
+      console.error('Lỗi không xác định:', error.message);
+    }
     setMessage('Có lỗi xảy ra khi xuất file.');
   }
 };
+
 
   
   return (

@@ -22,7 +22,7 @@ const ServiceBookingList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [expandedNotes, setExpandedNotes] = useState([]);
   const [staff, setStaff] = useState(null);
-  const [locationId, setLocationId] = useState(null);
+  const [locationFilter, setLocationFilter] = useState('');
 
   const rowsPerPage = 7;
 
@@ -40,47 +40,65 @@ const ServiceBookingList = () => {
   const fetchServiceBookings = async () => {
     if (staff) {
       let location = '';
-      if (staff.role === 'staff_mk') {
-        location = '66f6c42f285571f28087c16a';
-      } else if (staff.role === 'staff_ds') {
+      if (staff.role === 'staff_ds') {
         location = '66f6c536285571f28087c16b';
+        setLocationFilter(location);
+      } else if (staff.role === 'staff_mk') {
+        location = '66f6c42f285571f28087c16a';
+        setLocationFilter(location);
       } else if (staff.role === 'staff_cb') {
         location = '66f6c59f285571f28087c16d';
+        setLocationFilter(location);
       }
 
-      if (location) {
-        setLocationId(location);
-        console.log(location); // Logs the correct location ID
+      if (location || locationFilter) {
+        let locationid = location || locationFilter;
 
+        let responseBLData = [];
+        try {
+          const responseBL = await axios.get(`${BASE_URL}/orderServices/location/${locationid}`);
+          responseBLData = responseBL.data || [];
+        } catch (error) {
+          console.warn(`Error fetching orderServices for location ${locationid}:`, error.message);
+          responseBLData = []; // Set to empty array on error
+        }
 
-        const responseBL = await axios.get(`${BASE_URL}/orderServices/location/${location}`);
+        try {
+          const response = await axios.get(`${BASE_URL}/service-bookings`);
+          setBookingsLocation(responseBLData);
+          setBookingAll(response.data || []);
 
-        const response = await axios.get(`${BASE_URL}/service-bookings`);
+          const filteredResponseBL = response.data.filter(item =>
+            responseBLData.some(order => order._id === item._id)
+          );
 
-        setBookingsLocation(responseBL.data || []);
-        setBookingAll(response.data || []);
-
-        const filteredResponseBL = response.data.filter(item =>
-          responseBL.data.some(order => order._id === item._id)
-        );
-        setBookings(filteredResponseBL);
-        setFilteredBookings(filteredResponseBL || []);
-
-      }
-      else {
-        const response = await axios.get(`${BASE_URL}/service-bookings`);
-        setBookings(response.data);
-        setFilteredBookings(response.data || []);
+          setBookings(filteredResponseBL);
+          setFilteredBookings(filteredResponseBL || []);
+        } catch (error) {
+          console.error('Error fetching service bookings:', error.message);
+          setBookings([]);
+          setFilteredBookings([]);
+        }
+      } else {
+        try {
+          const response = await axios.get(`${BASE_URL}/service-bookings`);
+          setBookings(response.data || []);
+          setFilteredBookings(response.data || []);
+        } catch (error) {
+          console.error('Error fetching all service bookings:', error.message);
+          setBookings([]);
+          setFilteredBookings([]);
+        }
       }
     }
   };
 
 
+
   useEffect(() => {
     fetchServiceBookings();
-  }, [staff]);
+  }, [staff, locationFilter]);
 
-  
   useEffect(() => {
     const filtered = bookings.filter((booking) => {
       const matchesBookingId = booking.bookingId
@@ -144,7 +162,6 @@ const ServiceBookingList = () => {
   const currentRows = filteredBookings.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.ceil(filteredBookings.length / rowsPerPage);
 
-  // Format date
   // Format date with 7-hour adjustment
   const formatDate = (date) => {
     if (!date) return 'N/A'; // Handle null or undefined dates
@@ -160,7 +177,6 @@ const ServiceBookingList = () => {
 
     return new Intl.DateTimeFormat('vi-VN', options).format(adjustedDate);
   };
-
 
 
   // Format currency
@@ -215,7 +231,23 @@ const ServiceBookingList = () => {
 
       </div>
       <div className="row mb-3 d-flex justify-content-evenly">
-        <div className="col-md-6">
+        {staff?.role === "admin" && (
+          <div className="col-md-4">
+
+            <select
+              className="form-select"
+              value={locationFilter}
+              onChange={(e) => setLocationFilter(e.target.value)}
+            >
+              <option value="">Chọn cơ sở</option>
+              <option value="66f6c42f285571f28087c16a">cơ sở 16 Minh Khai</option>
+              <option value="66f6c536285571f28087c16b">cơ sở Đồ Sơn</option>
+              <option value="66f6c59f285571f28087c16d">cơ sở Cát Bà</option>
+            </select>
+
+          </div>
+        )}
+        <div className="col-md-4">
           <input
             type="text"
             className="form-control"

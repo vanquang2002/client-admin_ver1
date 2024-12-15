@@ -80,36 +80,7 @@ const ServiceBookingList = () => {
     fetchServiceBookings();
   }, [staff]);
 
-  // Handle search with status filter
-  // useEffect(() => {
-  //   const filtered = bookings.filter((booking) => {
-  //     const matchesBookingId = booking.bookingId.toString().includes(searchBookingId.trim().replace(/\s+/g, ' '));
-  //     const matchesCustomerName = booking.customerName
-  //       .toLowerCase()
-  //       .includes(searchCustomerName.toLowerCase().trim().replace(/\s+/g, ' '));
-  //     const matchesServiceName = booking.serviceName
-  //       .toLowerCase()
-  //       .includes(searchServiceName.toLowerCase().trim().replace(/\s+/g, ' '));
-  //     const matchesStartTime =
-  //       !startTime ||
-  //       new Date(booking.time).toISOString().slice(0, 10) === new Date(startTime).toISOString().slice(0, 10);
-
-  //     const matchesStatus =
-  //       !searchStatus || booking.status === searchStatus; // Apply status filter
-
-  //     return (
-  //       matchesBookingId &&
-  //       matchesCustomerName &&
-  //       matchesServiceName &&
-  //       matchesStartTime &&
-  //       matchesStatus // Include status filter in the conditions
-  //     );
-  //   });
-
-  //   setFilteredBookings(filtered);
-  //   setCurrentPage(1); // Reset to the first page when filtering
-  // }, [searchBookingId, searchCustomerName, searchServiceName, startTime, endTime, searchStatus, bookings]);
-
+  
   useEffect(() => {
     const filtered = bookings.filter((booking) => {
       const matchesBookingId = booking.bookingId
@@ -174,10 +145,23 @@ const ServiceBookingList = () => {
   const totalPages = Math.ceil(filteredBookings.length / rowsPerPage);
 
   // Format date
+  // Format date with 7-hour adjustment
   const formatDate = (date) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return new Intl.DateTimeFormat('vi-VN', options).format(new Date(date));
+    if (!date) return 'N/A'; // Handle null or undefined dates
+
+    const adjustedDate = new Date(new Date(date).getTime() - 7 * 60 * 60 * 1000); // Subtract 7 hours
+    const options = {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    };
+
+    return new Intl.DateTimeFormat('vi-VN', options).format(adjustedDate);
   };
+
+
 
   // Format currency
   const formatCurrency = (value) => {

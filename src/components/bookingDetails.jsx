@@ -736,8 +736,12 @@ const BookingDetails = () => {
                 <Col >
                     <p><strong>Tên định danh:</strong> {Indentify.name || 'N/A'}</p>
                     <p><strong>Mã định danh:</strong> {Indentify.code || 'N/A'}</p>
-                    <p><strong>Ngày đăng ký:</strong> {format(new Date(Indentify.dateStart), 'dd-MM-yyyy')}</p>
-                    <p><strong>Ngày hết hạn:</strong> {format(new Date(Indentify.dateEnd), 'dd-MM-yyyy')}</p>
+                    <p><strong>Ngày đăng ký:</strong>{' '}{Indentify.dateStart? format(new Date(Indentify.dateStart["$date"] || Indentify.dateStart), 'dd-MM-yyyy')
+                            : 'N/A'}
+                    </p>
+                    <p><strong>Ngày hết hạn:</strong>{' '}{Indentify.dateEnd
+                            ? format(new Date(Indentify.dateEnd["$date"] || Indentify.dateEnd), 'dd-MM-yyyy')
+                            : 'N/A'}</p>
                     <p><strong>Đăng ký tại:</strong> {Indentify.location}</p>
                 </Col>
 

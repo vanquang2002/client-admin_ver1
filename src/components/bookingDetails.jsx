@@ -21,6 +21,7 @@ const BookingDetails = () => {
     const [orderServices, setOrderServices] = useState([]);
     const [location, setLocation] = useState({});
     const [Agency, setAgency] = useState({});
+    const [Indentify, setIndentify] = useState({});
     const [isUpdating, setIsUpdating] = useState(false);
     const [expandedNotes, setExpandedNotes] = useState({}); // Trạng thái để lưu ghi chú được mở rộng
     const addServiceRef = useRef(null);
@@ -151,6 +152,8 @@ const BookingDetails = () => {
             setLocation(locationsResponse.data.locationId);
             const AgencyResponse = await axios.get(`${BASE_URL}/agencies/customer/${customerId}`);
             setAgency(AgencyResponse.data);
+            const identification = await axios.get(`${BASE_URL}/identifycations/customer/${customerId}`);
+            setIndentify(identification.data);
         } catch (error) {
             console.error('Error fetching location or agencies details:', error);
         }
@@ -186,116 +189,6 @@ const BookingDetails = () => {
             [id]: !prev[id],
         }));
     };
-
-    // const handleQuantityChange = async (orderRoomId, quantity, emptyRoom) => {
-    //     const newQuantity = Math.max(1, Number(quantity));
-
-    //     if (newQuantity > emptyRoom) {
-    //         setQuantityError(prev => ({
-    //             ...prev,
-    //             [orderRoomId]: `Maximum available rooms: ${emptyRoom}`,
-    //         }));
-    //         return;
-    //     }
-
-    //     setQuantityError(prev => {
-    //         const { [orderRoomId]: removed, ...rest } = prev;
-    //         return rest;
-    //     });
-
-    //     setUpdatedQuantities(prev => ({
-    //         ...prev,
-    //         [orderRoomId]: newQuantity,
-    //     }));
-
-    //     // Fetch updated remaining rooms
-    //     await fetchRoomData(orderRooms);
-    // };
-    // const handleUpdateRoomQuantities = async () => {
-    //     try {
-    //         // Kiểm tra số lượng có vượt quá số phòng trống hay không
-
-    //         await fetchBookingDetails();
-    //         for (const [orderRoomId, quantity] of Object.entries(updatedQuantities)) {
-    //             const orderRoom = orderRooms.find(room => room._id === orderRoomId);
-    //             const remainingRoom = remainingRooms[orderRoom.roomCateId._id]; // Số phòng còn lại cho phòng này
-    //             console.log(remainingRoom, remainingRoom + orderRoom.quantity);
-
-    //             if (quantity > remainingRoom + orderRoom.quantity) {
-    //                 // Lưu thông báo lỗi cho phòng này
-    //                 setQuantityError((prevErrors) => ({
-    //                     ...prevErrors,
-    //                     [orderRoomId]: "Số lượng phòng đã vượt quá số phòng còn lại!", // Lỗi cho phòng cụ thể
-    //                 }));
-    //                 return; // Dừng lại nếu có lỗi, không gửi yêu cầu PUT
-    //             }
-
-
-    //             const priceDifference = calculateTotalPrice();
-    //             // Cập nhật giá tổng của booking
-    //             const bookingId = orderRooms[0]?.bookingId?._id;
-    //             await axios.put(`http://localhost:9999/bookings/${bookingId}`, { price: orderRooms[0].bookingId.price + priceDifference, note: note });
-
-    //             await axios.post('http://localhost:9999/histories/BE', { bookingId: bookingId, staffId: staff._id, note: `${staff.role} ${staff.fullname} đã cập nhật thông tin phòng` });
-
-
-    //             // Xóa lỗi nếu số lượng hợp lệ
-    //             setQuantityError((prevErrors) => {
-    //                 const { [orderRoomId]: removedError, ...rest } = prevErrors;  // Xóa lỗi cho phòng này nếu hợp lệ
-    //                 return rest;
-    //             });
-    //         }
-
-    //         // Nếu không có lỗi, tiếp tục gọi API để cập nhật số lượng
-    //         for (const [orderRoomId, quantity] of Object.entries(updatedQuantities)) {
-    //             await axios.put(`http://localhost:9999/orderRooms/${orderRoomId}`, { quantity });
-    //         }
-    //         // Làm mới dữ liệu
-    //         fetchBookingDetails();
-
-    //         // Reset số lượng đã cập nhật
-    //         setUpdatedQuantities({});
-    //         toast.success('Cập nhật số lượng phòng , ghi chú và giá thành công.', {
-    //             position: "top-right",
-    //         });
-    //         // Có thể thêm thông báo thành công hoặc xử lý khác sau khi cập nhật xong
-    //         console.log("Số lượng phòng đã được cập nhật thành công!");
-    //     } catch (error) {
-    //         console.error('Lỗi khi cập nhật số lượng phòng:', error);
-    //     }
-    // };
-
-    const calculateTotalPrice = () => {
-        // Lấy giá cũ của tất cả orderRooms (tính theo từng phòng)
-        const oldPrice = orderRooms.reduce((total, orderRoom) => {
-            const roomPrice = orderRoom.roomCateId?.price || 0;
-            const quantity = orderRoom.quantity;
-
-            const receiveDate = new Date(orderRoom.receiveRoom);
-            const returnDate = new Date(orderRoom.returnRoom);
-            const numberOfNights = Math.max(1, Math.ceil((returnDate - receiveDate) / (1000 * 60 * 60 * 24)));
-
-            return total + roomPrice * quantity * numberOfNights;
-        }, 0);
-
-        // Tính giá mới từ số lượng phòng đã được cập nhật
-        const newPrice = orderRooms.reduce((total, orderRoom) => {
-            const roomPrice = orderRoom.roomCateId?.price || 0;
-            const quantity = updatedQuantities[orderRoom._id] ?? orderRoom.quantity;
-
-            const receiveDate = new Date(orderRoom.receiveRoom);
-            const returnDate = new Date(orderRoom.returnRoom);
-            const numberOfNights = Math.max(1, Math.ceil((returnDate - receiveDate) / (1000 * 60 * 60 * 24)));
-
-            return total + roomPrice * quantity * numberOfNights;
-        }, 0);
-
-        // Tính chênh lệch giữa giá cũ và giá mới
-        const priceDifference = newPrice - oldPrice;
-
-        return priceDifference; // Trả về chênh lệch giá
-    };
-
 
 
     // Hàm để hiển thị nội dung ghi chú
@@ -816,9 +709,12 @@ const BookingDetails = () => {
                     <p><strong>Họ và tên:</strong> {orderRooms[0].customerId?.fullname || 'N/A'}</p>
                     <p><strong>Email:</strong> {orderRooms[0].customerId?.email || 'N/A'}</p>
                     <p><strong>Số điện thoại:</strong> {orderRooms[0].customerId?.phone || 'N/A'}</p>
+                    <p><strong>Địa chỉ:</strong> {orderRooms[0].customerId?.address || 'N/A'}</p>
                     <p><strong>Check-in:</strong> {format(new Date(orderRooms[0].bookingId?.checkin), 'dd-MM-yyyy')}</p>
                     <p><strong>Check-out:</strong> {format(new Date(orderRooms[0].bookingId?.checkout), 'dd-MM-yyyy')}</p>
                 </Col>
+
+
                 {/* Hiển thị thông tin Agency */}
                 {Agency && (
                     <Col className="agency-details">
@@ -835,6 +731,14 @@ const BookingDetails = () => {
                     <p><strong>Trạng thái:</strong> {orderRooms[0].bookingId?.status || 'N/A'}</p>
                     <p><strong>Đã thanh toán:</strong> {orderRooms[0].bookingId?.payment || 0}</p>
                     <p><strong>Còn nợ:</strong> {orderRooms[0].bookingId?.price - orderRooms[0].bookingId?.payment}</p>
+                </Col>
+
+                <Col >
+                    <p><strong>Tên định danh:</strong> {Indentify.name || 'N/A'}</p>
+                    <p><strong>Mã định danh:</strong> {Indentify.code || 'N/A'}</p>
+                    <p><strong>Ngày đăng ký:</strong> {format(new Date(Indentify.dateStart), 'dd-MM-yyyy')}</p>
+                    <p><strong>Ngày hết hạn:</strong> {format(new Date(Indentify.dateEnd), 'dd-MM-yyyy')}</p>
+                    <p><strong>Đăng ký tại:</strong> {Indentify.location}</p>
                 </Col>
 
             </Row>

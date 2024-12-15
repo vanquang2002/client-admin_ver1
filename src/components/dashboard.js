@@ -28,7 +28,7 @@ const Dashboard = () => {
       } else if (storedUser.role === 'staff_cb') {
         setSelectedLocation('66f6c59f285571f28087c16d');
       } else if (storedUser.role === 'staff_mk') {
-        setSelectedLocation('66f6c5c9285571f28087c16a');
+        setSelectedLocation('66f6c42f285571f28087c16a');
       }
     }
     axios
@@ -362,7 +362,7 @@ const Dashboard = () => {
             onChange={(e) => setSelectedLocation(e.target.value)}
           >
             <option value="">Tất cả địa điểm</option>
-            <option value="66f6c5c9285571f28087c16a">Cơ sở Minh Khai</option>
+            <option value="66f6c42f285571f28087c16a">Cơ sở Minh Khai</option>
             <option value="66f6c536285571f28087c16b">Cơ sở Đồ Sơn</option>
             <option value="66f6c59f285571f28087c16d">Cơ sở Cát Bà</option>
           </Form.Control>

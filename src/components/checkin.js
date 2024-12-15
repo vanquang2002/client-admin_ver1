@@ -45,7 +45,7 @@ const ListRoom = () => {
   }, []);
 
   const filteredRooms = selectedLocation
-    ? roomData.filter((room) => room.roomCategoryId.locationId === selectedLocation)
+    ? roomData.filter((room) => room.roomCategoryId?.locationId === selectedLocation)
     : roomData;
 
   const handleRoomSelect = (roomId) => {
@@ -74,7 +74,7 @@ const ListRoom = () => {
       )
 
       console.log(room.roomCategoryId);
-      const newNotification = { content: "Lễ tân đã check-in phòng", locationId: room.roomCategoryId.locationId };
+      const newNotification = { content: "Lễ tân đã check-in phòng", locationId: room.roomCategoryId?.locationId };
       axios
         .post(`${BASE_URL}/chats/send`, newNotification)
         .then((response) => {
@@ -83,7 +83,7 @@ const ListRoom = () => {
 
     });
     navigate(`/saveHistory`, {
-      state: {
+state: {
         bookingId: id,
         note: `${user.role} ${user.fullname} đã check-in phòng`,
         user: user, // Truyền cả đối tượng người dùng

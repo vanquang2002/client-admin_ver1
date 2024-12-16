@@ -357,16 +357,39 @@ const ListBooking = () => {
       </Table>
       {/* Pagination Controls */}
       <Pagination>
-        {[...Array(totalPages)].map((_, index) => (
-          <Pagination.Item
-            key={index + 1}
-            active={index + 1 === currentPage}
-            onClick={() => handlePageChange(index + 1)}
-          >
-            {index + 1}
-          </Pagination.Item>
-        ))}
-      </Pagination>
+  {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
+  {currentPage > 1 && (
+    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
+  )}
+
+  {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
+  {[...Array(totalPages)]
+    .slice(
+      // Lấy danh sách trang bắt đầu từ currentPage - 3, đảm bảo không nhỏ hơn 0
+      Math.max(0, currentPage - 3),
+      // Kết thúc ở currentPage + 2, đảm bảo không vượt quá totalPages
+      Math.min(totalPages, currentPage + 2)
+    )
+    .map((_, index) => {
+      // Tính số trang thực tế dựa trên vị trí slice và chỉ số index
+      const pageNumber = Math.max(1, currentPage - 2) + index;
+      return (
+        // Hiển thị một mục phân trang
+        <Pagination.Item
+          key={pageNumber} // Key duy nhất cho mỗi mục
+          active={pageNumber === currentPage} // Đánh dấu mục hiện tại là active
+          onClick={() => handlePageChange(pageNumber)} // Chuyển trang khi nhấp vào
+        >
+          {pageNumber}
+        </Pagination.Item>
+      );
+    })}
+
+  {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
+  {currentPage < totalPages && (
+    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
+  )}
+</Pagination>
 
 
       {/* Detail Modal

@@ -345,16 +345,47 @@ const ServiceBookingList = () => {
 
           {/* Pagination */}
           <nav>
-            <ul className="pagination justify-content-center">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
-                  <button className="page-link" onClick={() => setCurrentPage(i + 1)}>
-                    {i + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+  <ul className="pagination justify-content-center">
+    {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
+    {currentPage > 1 && (
+      <li className="page-item">
+        <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
+          &laquo;
+        </button>
+      </li>
+    )}
+
+    {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
+    {Array.from(
+      { length: Math.min(totalPages, 5) },
+      (_, i) => {
+        const pageNumber = Math.max(1, currentPage - 2) + i;
+        return (
+          <li
+            key={pageNumber}
+            className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
+          >
+            <button
+              className="page-link"
+              onClick={() => setCurrentPage(pageNumber)}
+            >
+              {pageNumber}
+            </button>
+          </li>
+        );
+      }
+    )}
+
+    {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
+    {currentPage < totalPages && (
+      <li className="page-item">
+        <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
+          &raquo;
+        </button>
+      </li>
+    )}
+  </ul>
+</nav>
         </div>
       )}
     </div>

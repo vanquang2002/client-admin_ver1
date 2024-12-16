@@ -345,47 +345,54 @@ const ServiceBookingList = () => {
 
           {/* Pagination */}
           <nav>
-  <ul className="pagination justify-content-center">
-    {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
-    {currentPage > 1 && (
-      <li className="page-item">
-        <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
-          &laquo;
-        </button>
-      </li>
-    )}
+            <ul className="pagination justify-content-center">
+              {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
+              {currentPage > 1 && (
+                <li className="page-item">
+                  <button className="page-link" onClick={() => setCurrentPage(currentPage - 1)}>
+                    &laquo;
+                  </button>
+                </li>
+              )}
 
-    {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
-    {Array.from(
-      { length: Math.min(totalPages, 5) },
-      (_, i) => {
-        const pageNumber = Math.max(1, currentPage - 2) + i;
-        return (
-          <li
-            key={pageNumber}
-            className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
-          >
-            <button
-              className="page-link"
-              onClick={() => setCurrentPage(pageNumber)}
-            >
-              {pageNumber}
-            </button>
-          </li>
-        );
-      }
-    )}
+              {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
+              {Array.from(
+                { length: Math.min(5, totalPages) },
+                (_, i) => {
+                  // Tính toán số trang hiển thị, đảm bảo nằm trong phạm vi hợp lệ từ 1 đến totalPages
+                  const startPage = Math.max(1, currentPage - 2); // Trang bắt đầu
+                  const pageNumber = startPage + i;
 
-    {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
-    {currentPage < totalPages && (
-      <li className="page-item">
-        <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
-          &raquo;
-        </button>
-      </li>
-    )}
-  </ul>
-</nav>
+                  // Đảm bảo không vượt quá totalPages
+                  if (pageNumber > totalPages) return null;
+
+                  return (
+                    <li
+                      key={pageNumber}
+                      className={`page-item ${currentPage === pageNumber ? 'active' : ''}`}
+                    >
+                      <button
+                        className="page-link"
+                        onClick={() => setCurrentPage(pageNumber)}
+                      >
+                        {pageNumber}
+                      </button>
+                    </li>
+                  );
+                }
+              )}
+
+              {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
+              {currentPage < totalPages && (
+                <li className="page-item">
+                  <button className="page-link" onClick={() => setCurrentPage(currentPage + 1)}>
+                    &raquo;
+                  </button>
+                </li>
+              )}
+            </ul>
+          </nav>
+
         </div>
       )}
     </div>

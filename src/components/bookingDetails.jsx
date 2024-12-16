@@ -558,13 +558,6 @@ const BookingDetails = () => {
 
 
 
-    const handleCheckoutAndUpService = () => {
-        if (newBookingPrice !== orderRooms[0].bookingId.price) {
-            handleUpdateBooking()
-        }
-        handleConfirmCheckout()
-    }
-
     const handleSave = async () => {
         setIsUpdating(true);
         try {
@@ -621,9 +614,10 @@ const BookingDetails = () => {
     };
 
     const handleConfirmCheckout = () => {
-        if (newBookingPrice !== orderRooms[0].bookingId.price) {
-            handleUpdateBooking()
-        }
+        // if (newBookingPrice !== orderRooms[0].bookingId.price) {
+            
+        // }
+        handleUpdateBooking();
         setShowModal(false);
         handleCheckout(); // Thực hiện hành động Check-out
     };
@@ -1005,7 +999,7 @@ const BookingDetails = () => {
                         </Button>
                         <Button variant="primary"
                             //  onClick={handleConfirmCheckout}>
-                            onClick={handleCheckoutAndUpService}
+                            onClick={handleConfirmCheckout}
                             disabled={isUpdating}>
                             {isUpdating ? 'Đang cập nhật...' : 'Xác nhận Check-out'}
                         </Button>

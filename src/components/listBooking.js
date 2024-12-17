@@ -25,6 +25,7 @@ const ListBooking = () => {
   const rowsPerPage = 7;
   const [userRole, setUserRole] = useState('');
   const [statusFilter, setStatusFilter] = useState(''); // New state for status filter
+  const [filteredBookings, setFilteredBookings] = useState([]);
 
 
   const fetchData = async () => {
@@ -189,21 +190,27 @@ const ListBooking = () => {
     return true;
   };
 
-  const filteredBookings = bookings?.filter((booking) => {
-    const formattedValue = searchQuery.trim().replace(/\s+/g, ' ');
-    const bookingId = booking.bookingId?._id.toLowerCase();
-    const customerName = booking.customerId?.fullname.toLowerCase();
-    const isMatchingLocation = selectedLocation ? booking.roomCateId?.locationId === selectedLocation : true;
-    const isMatchingCheckin = isDateInRange(booking.bookingId?.checkin, checkinFilter, checkoutFilter);
-    const isMatchingStatus = statusFilter ? booking.bookingId?.status === statusFilter : true;
+  useEffect(() => {
+    const filtered = bookings?.filter((booking) => {
+      const formattedValue = searchQuery.trim().replace(/\s+/g, ' ');
+      const bookingId = booking.bookingId?._id.toLowerCase();
+      const customerName = booking.customerId?.fullname.toLowerCase();
+      const isMatchingLocation = selectedLocation ? booking.roomCateId?.locationId === selectedLocation : true;
+      const isMatchingCheckin = isDateInRange(booking.bookingId?.checkin, checkinFilter, checkoutFilter);
+      const isMatchingStatus = statusFilter ? booking.bookingId?.status === statusFilter : true;
 
-    return (
-      isMatchingLocation &&
-      isMatchingCheckin &&
-      isMatchingStatus &&
-      (bookingId?.includes(formattedValue.toLowerCase()) || customerName?.includes(formattedValue.toLowerCase()))
-    );
-  });
+      return (
+        isMatchingLocation &&
+        isMatchingCheckin &&
+        isMatchingStatus &&
+        (bookingId?.includes(formattedValue.toLowerCase()) || customerName?.includes(formattedValue.toLowerCase()))
+      );
+    });
+
+    setFilteredBookings(filtered);
+    setCurrentPage(1);
+
+  }, [searchQuery, selectedLocation, statusFilter, checkinFilter, checkoutFilter, bookings])
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
@@ -357,39 +364,40 @@ const ListBooking = () => {
       </Table>
       {/* Pagination Controls */}
       <Pagination>
-  {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
-  {currentPage > 1 && (
-    <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
-  )}
+        {/* Nút "Previous" hiển thị nếu không phải là trang đầu tiên */}
+        {currentPage > 1 && (
+          <Pagination.Prev onClick={() => handlePageChange(currentPage - 1)} />
+        )}
 
-  {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
-  {[...Array(totalPages)]
-    .slice(
-      // Lấy danh sách trang bắt đầu từ currentPage - 3, đảm bảo không nhỏ hơn 0
-      Math.max(0, currentPage - 3),
-      // Kết thúc ở currentPage + 2, đảm bảo không vượt quá totalPages
-      Math.min(totalPages, currentPage + 2)
-    )
-    .map((_, index) => {
-      // Tính số trang thực tế dựa trên vị trí slice và chỉ số index
-      const pageNumber = Math.max(1, currentPage - 2) + index;
-      return (
-        // Hiển thị một mục phân trang
-        <Pagination.Item
-          key={pageNumber} // Key duy nhất cho mỗi mục
-          active={pageNumber === currentPage} // Đánh dấu mục hiện tại là active
-          onClick={() => handlePageChange(pageNumber)} // Chuyển trang khi nhấp vào
-        >
-          {pageNumber}
-        </Pagination.Item>
-      );
-    })}
+        {/* Hiển thị danh sách các trang, chỉ lấy các trang trong phạm vi xung quanh trang hiện tại */}
+        {[...Array(totalPages)]
+          .slice(
+            // Lấy danh sách trang bắt đầu từ currentPage - 3, đảm bảo không nhỏ hơn 0
+            Math.max(0, currentPage - 3),
+            // Kết thúc ở currentPage + 2, đảm bảo không vượt quá totalPages
+            Math.min(totalPages, currentPage + 2)
+          )
+          .map((_, index) => {
+            // Tính số trang thực tế dựa trên vị trí slice và chỉ số index
+            const pageNumber = Math.max(1, currentPage - 2) + index;
+            return (
+              // Hiển thị một mục phân trang
+              <Pagination.Item
+                key={pageNumber} // Key duy nhất cho mỗi mục
+                active={pageNumber === currentPage} // Đánh dấu mục hiện tại là active
+                onClick={() => handlePageChange(pageNumber)} // Chuyển trang khi nhấp vào
+              >
+                {pageNumber}
+              </Pagination.Item>
+            );
+          })}
 
-  {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
-  {currentPage < totalPages && (
-    <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
-  )}
-</Pagination>
+        {/* Nút "Next" hiển thị nếu không phải là trang cuối cùng */}
+        {currentPage < totalPages && (
+          <Pagination.Next onClick={() => handlePageChange(currentPage + 1)} />
+        )}
+      </Pagination>
+
 
 
       {/* Detail Modal
